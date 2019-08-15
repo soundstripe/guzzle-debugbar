@@ -36,9 +36,10 @@ class ServiceProvider extends BaseServiceProvider
     public function register()
     {
         // Configuring all guzzle clients.
-        $this->app->bind(ClientInterface::class, function () {
+        $this->app->bind(ClientInterface::class, function ($app, $params = []) {
+            $config = isset($params[0]) ? $params[0] : [];
             // Guzzle client
-            return new Client(['handler' => $this->app->make(HandlerStack::class)]);
+            return new Client($config + ['handler' => $this->app->make(HandlerStack::class)]);
         });
 
         $this->app->alias(ClientInterface::class, Client::class);
